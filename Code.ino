@@ -21,7 +21,7 @@ bool secondsPressOld;
 //For measuring time
 unsigned long lastMillis;
 
-//Printing state (used after change with new name)
+//Printing state (used after changing state with new name as an argument)
 void printState(String state){
   lcd.setCursor(0, 0);
   lcd.clear();
@@ -30,7 +30,7 @@ void printState(String state){
 
 //If timer reaches 0 counting
 void handleStop(){
-  //Set alarm state and 
+  //Set alarm state and send sound
   state = 2;
   tone(pinPiezo, 440);
   printState("Stop");
@@ -53,7 +53,7 @@ void printTime(){
 
   lcd.print(":");
 
-  //If seconds has 2 digits print them, if 1: print 0 and then minutes
+  //If seconds has 2 digits print them, if 1: print 0 and then seconds
   if(seconds >= 10){
     lcd.print(seconds);
   }
@@ -83,7 +83,7 @@ void loop() {
   minutesPress = analogRead(pinMinutes) > 511;
   secondsPress = analogRead(pinSeconds) > 511;
 
-  //If button is not pressed and was (after releasing button)
+  //If button is not pressed and was pressed before (after releasing button)
 
   //If state = setting and minutes was pressed add 60 seconds to timer
   if(!minutesPress && minutesPressOld && state == 0){
