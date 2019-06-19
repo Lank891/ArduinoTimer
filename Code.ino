@@ -21,29 +21,58 @@ bool secondsPressOld;
 //For measuring time
 unsigned long lastMillis;
 
-//Printing state (used after changing state with new name as an argument)
-void printState(String state){
+//Playing alarm knowing how many ms passed form the start
+void playAlarm(unsigned long ms) {
+
+  //That's megalovania 8s fragment
+  ms = 1 + ( ms % 8000 );
+  if (ms >= 1 && ms <= 250) tone(pinPiezo, 294);
+  else if (ms >= 2001 && ms <= 2250) tone(pinPiezo, 262);
+  else if (ms >= 4001 && ms <= 4250) tone(pinPiezo, 247);
+  else if (ms >= 6001 && ms <= 6250) tone(pinPiezo, 233);
+  else {
+    //That's reapeating fragment so we need only from  251-2000, 2251-4000 etc
+    //Mod 2001 so we will have always from 0 to 2000, but we will have x251 b/c
+    //of others conditions so we will have always value in range [251, 2000];
+    ms = ms % 2001;
+
+    if (ms >= 251 && ms <= 500) tone(pinPiezo, 587);
+    else if (ms >= 501 && ms <= 875) tone(pinPiezo, 440);
+    else if (ms >= 876 && ms <= 1000) tone(pinPiezo, 415);
+    else if (ms >= 1001 && ms <= 1125) noTone(pinPiezo);
+    else if (ms >= 1126 && ms <= 1375) tone(pinPiezo, 392);
+    else if (ms >= 1376 && ms <= 1625) tone(pinPiezo, 349);
+    else if (ms >= 1626 && ms <= 1750) tone(pinPiezo, 294);
+    else if (ms >= 1751 && ms <= 1875) tone(pinPiezo, 349);
+    else if (ms >= 1876 && ms <= 2000) tone(pinPiezo, 392);
+  }
+}
+
+//Printing state (used after change with new name)
+void printState(String state) {
   lcd.setCursor(0, 0);
   lcd.clear();
   lcd.print(state);
 }
 
 //If timer reaches 0 counting
-void handleStop(){
-  //Set alarm state and send sound
+void handleStop() {
+  //Set alarm state and
   state = 2;
-  tone(pinPiezo, 440);
   printState("Stop");
+
+  //Set timer for meauring time to 0 for playing alarm
+  lastMillis = millis();
 }
 
 //Formatting time and printing on LCD
-void printTime(){
+void printTime() {
   int minutes = timeInSeconds / 60;
   int seconds = timeInSeconds % 60;
 
   lcd.setCursor(11, 1);
   //If minutes has 2 digits print them, if 1: print 0 and then minutes
-  if(minutes >= 10){
+  if (minutes >= 10) {
     lcd.print(minutes);
   }
   else {
@@ -53,8 +82,8 @@ void printTime(){
 
   lcd.print(":");
 
-  //If seconds has 2 digits print them, if 1: print 0 and then seconds
-  if(seconds >= 10){
+  //If seconds has 2 digits print them, if 1: print 0 and then minutes
+  if (seconds >= 10) {
     lcd.print(seconds);
   }
   else {
@@ -83,26 +112,26 @@ void loop() {
   minutesPress = analogRead(pinMinutes) > 511;
   secondsPress = analogRead(pinSeconds) > 511;
 
-  //If button is not pressed and was pressed before (after releasing button)
+  //If button is not pressed and was (after releasing button)
 
   //If state = setting and minutes was pressed add 60 seconds to timer
-  if(!minutesPress && minutesPressOld && state == 0){
+  if (!minutesPress && minutesPressOld && state == 0) {
     timeInSeconds += 60;
   }
   //If state = setting and seconds was pressed add 10 seconds to timer
-  if(!secondsPress && secondsPressOld && state == 0){
+  if (!secondsPress && secondsPressOld && state == 0) {
     timeInSeconds += 10;
   }
 
   //If timer reaches 1 hour change it to 0 again
-  if(timeInSeconds >= 3600){
+  if (timeInSeconds >= 3600) {
     timeInSeconds = 0;
   }
 
   //If start/reset button was pressed
-  if(!startPress && startPressOld){
+  if (!startPress && startPressOld) {
     //If state was "setting" and we have some time change state to counting and save time
-    if(state == 0 && timeInSeconds > 0){
+    if (state == 0 && timeInSeconds > 0) {
       state = 1;
       lastMillis = millis();
       printState("Time Left:");
@@ -117,16 +146,23 @@ void loop() {
   }
 
   //If we are counting
-  if(state == 1){
+  if (state == 1) {
     //Check if 999ms passed, if yes substract 1 second and save new "last time"
-    if(millis() - lastMillis >= 999){
-        timeInSeconds -= 1;
-        lastMillis = millis();
-      }
+    if (millis() - lastMillis >= 999) {
+      timeInSeconds -= 1;
+      lastMillis = millis();
+    }
     //If 0 seconds left - handleStop
-     if(timeInSeconds <= 0){
+    if (timeInSeconds <= 0) {
       handleStop();
-     }
+    }
+  }
+
+  //If we are playing alarm
+  if (state == 2) {
+    //Play alarm, argument is milliseconds from the moment
+    //we started playing alarm
+    playAlarm(millis() - lastMillis);
   }
 
   //Save states of buttons in this cycle as states of previous one
