@@ -23,3 +23,5 @@ String with notes contains characters, each note is 5 characters and there are n
 * 3 - `23456`: Octave: c2/c3/c4/c5/c6 (great-small-1 line-2 line-3 line)
 * 4 - `012345`: note length - 0 is full note, 1 is half, 2 is quarter ... 5 is 32th
 * 5 - `.-`: . adds half of a note length (like standard), - means do nothing 
+
+Ex: `d-44-d-53-a-43.ab44-`
