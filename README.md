@@ -8,10 +8,10 @@ How to add new song to play (song will be choosen randomly after each end of cou
 Go to section  `SONG LIST TO ADDING SONGS`
 
 
-* 1 Change value of songsCounter
-* 2 In initSongs add line:
-*   songsList[index].create(BPM, "StringWithNotes");
-* 3 That's all, program will randomly pick song after end of counting time
+* 1 - Change value of songsCounter
+* 2 - In initSongs add line:
+    `songsList[index].create(BPM, "StringWithNotes");`
+* 3 - That's all, program will randomly pick song after end of counting time
 
 
 String with notes contains characters, each note is 5 characters and there are no additional white characters
