@@ -97,7 +97,7 @@ public:
         case '6': noteFreq *= 4.; break;
         default: break; //Case '4' = default = do nothing
       };
-      //Mote length
+      //Note length
       switch (note) {
         case '0': noteLen = wLen; break;
         case '1': noteLen = hLen; break;
