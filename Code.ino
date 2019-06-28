@@ -30,128 +30,130 @@ unsigned short songNum; //number of actually playing song
 //Class for one note - contsins frequency (0 for noTone)
 // and timeStamp which tells us afrer how many millis it should start
 class note {
-public:
-  void create(unsigned short _f, unsigned long _ts){
-    freq = _f;
-    timeStamp = _ts;
-  }
-  unsigned short freq;
-  unsigned long timeStamp;
+  public:
+    void create(unsigned short _f, unsigned long _ts) {
+      freq = _f;
+      timeStamp = _ts;
+    }
+    unsigned short freq;
+    unsigned long timeStamp;
 };
 
 //Class for one song - contains vector of notes and duration of song in millis
 //Assuming that everything is correct since it has to be coded anyway
 //and lenOfMusic - number of notes
 class music {
-public:
-  void create(unsigned short bpm, String sounds){
-    float qLen = 60000./(float)bpm; //ms of quarter
-    float hLen = qLen * 2.;  //ms of half note
-    float wLen = qLen * 4.;  //ms of whole note
-    float eLen = qLen / 2.;  //ms of 8th
-    float sLen = qLen / 4.;  //ms of 16th
-    float tLen = qLen / 8.;  //ms of 32th
+  public:
+    void create(unsigned short bpm, String sounds) {
+      float qLen = 60000. / (float)bpm; //ms of quarter
+      float hLen = qLen * 2.;  //ms of half note
+      float wLen = qLen * 4.;  //ms of whole note
+      float eLen = qLen / 2.;  //ms of 8th
+      float sLen = qLen / 4.;  //ms of 16th
+      float tLen = qLen / 8.;  //ms of 32th
 
-    unsigned long actualLength = 0; //moment of song we are now, start at 10ms
-    //Since we have additional note at the begining
+      unsigned long actualLength = 0; //moment of song we are now, start at 10ms
+      //Since we have additional note at the begining
 
-    lenOfMusic = sounds.length() / 5; //no of notes
-    notes = new note[lenOfMusic];
+      lenOfMusic = sounds.length() / 5; //no of notes
+      notes = new note[lenOfMusic];
 
-    //Reading notes and adding them to notes vector
-    for(unsigned short n = 0; n < lenOfMusic; n++){
-      //Informations from string
-      char heigth = sounds.charAt(5*n + 0);
-      char halfTone = sounds.charAt(5*n + 1);
-      char octave = sounds.charAt(5*n + 2);
-      char note = sounds.charAt(5*n + 3);
-      char addLen = sounds.charAt(5*n + 4);
+      //Reading notes and adding them to notes vector
+      for (unsigned short n = 0; n < lenOfMusic; n++) {
+        //Informations from string
+        char heigth = sounds.charAt(5 * n + 0);
+        char halfTone = sounds.charAt(5 * n + 1);
+        char octave = sounds.charAt(5 * n + 2);
+        char note = sounds.charAt(5 * n + 3);
+        char addLen = sounds.charAt(5 * n + 4);
 
-      //Actual informations about note
-      float noteFreq;
-      float noteLen;
+        //Actual informations about note
+        float noteFreq;
+        float noteLen;
 
-      //Switching possible characters (assuming correctness)
-      //Set initial freq as C4 octave
-      switch (heigth) {
-        case 'c': noteFreq = 261.63; break;
-        case 'd': noteFreq = 293.66; break;
-        case 'e': noteFreq = 329.63; break;
-        case 'f': noteFreq = 349.23; break;
-        case 'g': noteFreq = 392.00; break;
-        case 'a': noteFreq = 440.00; break;
-        case 'b': noteFreq = 493.88; break;
-        default: noteFreq = 0; break; // 'p' = default = pause
-      };
-      //+- half a tone
-      switch (halfTone) {
-        case 'b': noteFreq /= 1.0594631; break;
-        case 'c': noteFreq *= 1.0596431; break;
-        default: break; //'-' = default = do nothing
-      };
-      //Real octave
-      switch (octave) {
-        case '2': noteFreq /= 4.; break;
-        case '3': noteFreq /= 2.; break;
-        case '5': noteFreq *= 2.; break;
-        case '6': noteFreq *= 4.; break;
-        default: break; //Case '4' = default = do nothing
-      };
-      //Note length
-      switch (note) {
-        case '0': noteLen = wLen; break;
-        case '1': noteLen = hLen; break;
-        case '2': noteLen = qLen; break;
-        case '3': noteLen = eLen; break;
-        case '4': noteLen = sLen; break;
-        default: noteLen = tLen; break; //default = '5' = 32th
-      };
-      //Additional dot
-      switch (addLen){
-        case '.': noteLen *= 1.5; break;
-        default: break; //default = '-' = do nothing
-      };
-      
-      notes[n].create(noteFreq, actualLength);
-      actualLength += noteLen;
-    }  
+        //Switching possible characters (assuming correctness)
+        //Set initial freq as C4 octave
+        switch (heigth) {
+          case 'c': noteFreq = 261.63; break;
+          case 'd': noteFreq = 293.66; break;
+          case 'e': noteFreq = 329.63; break;
+          case 'f': noteFreq = 349.23; break;
+          case 'g': noteFreq = 392.00; break;
+          case 'a': noteFreq = 440.00; break;
+          case 'b': noteFreq = 493.88; break;
+          default: noteFreq = 0; break; // 'p' = default = pause
+        };
+        //+- half a tone
+        switch (halfTone) {
+          case 'b': noteFreq /= 1.0594631; break;
+          case 'c': noteFreq *= 1.0596431; break;
+          default: break; //'-' = default = do nothing
+        };
+        //Real octave
+        switch (octave) {
+          case '2': noteFreq /= 4.; break;
+          case '3': noteFreq /= 2.; break;
+          case '5': noteFreq *= 2.; break;
+          case '6': noteFreq *= 4.; break;
+          default: break; //Case '4' = default = do nothing
+        };
+        //Note length
+        switch (note) {
+          case '0': noteLen = wLen; break;
+          case '1': noteLen = hLen; break;
+          case '2': noteLen = qLen; break;
+          case '3': noteLen = eLen; break;
+          case '4': noteLen = sLen; break;
+          default: noteLen = tLen; break; //default = '5' = 32th
+        };
+        //Additional dot
+        switch (addLen) {
+          case '.': noteLen *= 1.5; break;
+          default: break; //default = '-' = do nothing
+        };
 
-    duration = actualLength;
-  }
+        notes[n].create(noteFreq, actualLength);
+        actualLength += noteLen;
+      }
 
-  note *notes; //Array of notes
-  unsigned long duration; //Duration of a song
-  unsigned short lenOfMusic; //Length of a music
+      duration = actualLength;
+    }
+
+    note *notes; //Array of notes
+    unsigned long duration; //Duration of a song
+    unsigned short lenOfMusic; //Length of a music
 };
 
 //--------------SONG LIST TO ADDING SONGS-------------------------------
 
-/* 
- * Fragment of string for one note has 5 characters:
- * 1 - `cdefgabp`: note height (p for pause)
- * 2 - `bc-`: substract or add half of a tone (b or cross), - for nothing
- * 3 - `23456`: Octave: c2/c3/c4/c5/c6 (great-small-1 line-2 line-3 line)
- * 4 - `012345`: note length - 0 is full note, 1 is half, 2 is quarter ... 5 is 32th
- * 5 - `.-`: . adds half of a note length (like standard), - means do nothing 
- */
+/*
+   Fragment of string for one note has 5 characters:
+   1 - `cdefgabp`: note height (p for pause)
+   2 - `bc-`: substract or add half of a tone (b or cross), - for nothing
+   3 - `23456`: Octave: c2/c3/c4/c5/c6 (great-small-1 line-2 line-3 line)
+   4 - `012345`: note length - 0 is full note, 1 is half, 2 is quarter ... 5 is 32th
+   5 - `.-`: . adds half of a note length (like standard), - means do nothing
+*/
 
- /*
-  * To add new song:
-  * 1. Change value of songsCounter
-  * 2. In initSongs add line:
-  *   songsList[index].create(BPM, "StringWithNotes");
-  * 3. That's all, program will randomly pick song after end of counting time
-  */
+/*
+   To add new song:
+   1. Change value of songsCounter
+   2. In initSongs add line:
+     songsList[index].create(BPM, "StringWithNotes");
+   3. That's all, program will randomly pick song after end of counting time
+*/
 
-const short songsCounter = 1; //Number of songs
+const short songsCounter = 2; //Number of songs
 
 //List of songs
 music songsList[songsCounter];
 
 //Initialize songs
-void initSongs(){
+void initSongs() {
   //Megalovania
-  songsList[0].create(120, "d-44-d-44-d-53-a-43.ab44-p-44-g-43-f-44-f-44-d-44-f-44-g-44-c-44-c-44-d-53-a-43.ab44-p-44-g-43-f-44-f-44-d-44-f-44-g-44-bc34-b-34-d-53-a-43.ab44-p-44-g-43-f-44-f-44-d-44-f-44-g-44-bb34-b-34-d-53-a-43.ab44-p-44-g-43-f-44-f-44-d-44-f-44-g-44-");
+  songsList[0].create(120, "d-43-d-53-a-43.ab44-p-44-g-43-f-44-f-44-d-44-f-44-g-44-c-43-d-53-a-43.ab44-p-44-g-43-f-44-f-44-d-44-f-44-g-44-b-33-d-53-a-43.ab44-p-44-g-43-f-44-f-44-d-44-f-44-g-44-bb33-d-53-a-43.ab44-p-44-g-43-f-44-f-44-d-44-f-44-g-44-");
+  //Vista Point
+  songsList[1].create( 90, "c-43-g-43-c-53-g-43-d-53-g-43-dc53-g-43-c-43-g-43-c-53-g-43-c-52.d-53-dc53-g-43-c-63-ac54-c-64-ac53-ac43-d-53-dc54-d-54-dc53-dc43-gc43-ac43-c-52-dc53-d-53-dc53-g-43-c-63-g-43-ac53-ac43-d-53-ac43-dc53-ac43-f-53-g-53-f-53-g-54-f-54-dc53-d-53-c-52-dc52-d-53-g-43-d-43-ac43-c-51-p-43-");
 }
 
 //-------------------PLAYING ALARMS---------------------------------
@@ -160,17 +162,17 @@ void initSongs(){
 unsigned short lastNote;
 
 //Playing alarm knowing how many ms passed form the start and no of song
-void playAlarm(unsigned long ms, unsigned short noOfSong) {  
+void playAlarm(unsigned long ms, unsigned short noOfSong) {
   //For looping the song
   ms = ms % (songsList[noOfSong].duration + 1);
-  
+
   unsigned short freqToPlay = 0; //Actual frequency to play
   bool playNewNote = false; //Should we play next note
 
   //If this is the last note check if we should reset or pass
-  if(lastNote == songsList[noOfSong].lenOfMusic - 1) {
+  if (lastNote == songsList[noOfSong].lenOfMusic - 1) {
     //If we should reset music set lastNote to 0 and save info to play first note
-    if(ms < songsList[noOfSong].notes[lastNote].timeStamp){
+    if (ms < songsList[noOfSong].notes[lastNote].timeStamp) {
       lastNote = 0;
       freqToPlay = songsList[noOfSong].notes[0].freq;
       playNewNote = true;
@@ -182,15 +184,15 @@ void playAlarm(unsigned long ms, unsigned short noOfSong) {
   }
 
   //If it is the time for the next note save freq, add next note and set flag to play new note
-  if(ms >= songsList[noOfSong].notes[lastNote + 1].timeStamp){
+  if (ms >= songsList[noOfSong].notes[lastNote + 1].timeStamp) {
     freqToPlay = songsList[noOfSong].notes[lastNote + 1].freq;
     lastNote++;
     playNewNote = true;
   }
-  
+
   //Play tone (if freq = 0 it is noTone)
-  if(playNewNote){
-    if(freqToPlay == 0){
+  if (playNewNote) {
+    if (freqToPlay == 0) {
       noTone(pinPiezo);
     }
     else {
